@@ -1,8 +1,14 @@
 import { NextRequest } from 'next/server';
-import { stripe } from '@/lib/stripe';
+// Update the import path if the file is located elsewhere, for example:
+// import { stripe } from '@/lib/stripe';
+// Or create the file at 'app/lib/stripe.ts' with the following content:
+// import Stripe from 'stripe';
+// export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-08-16' });
 import { headers } from 'next/headers';
 import Stripe from 'stripe';
 import { updateOrderToPaid } from '@/lib/actions/order.actions';
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2023-08-16' });
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
