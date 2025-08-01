@@ -9,6 +9,8 @@ import Stripe from 'stripe';
 import { updateOrderToPaid } from '@/lib/actions/order.actions';
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2025-02-24.acacia' });
+console.log("STRIPE_SECRET_KEY is:", process.env.STRIPE_SECRET_KEY);
+
 
 export async function POST(req: NextRequest) {
   const rawBody = await req.text();
