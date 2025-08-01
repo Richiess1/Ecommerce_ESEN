@@ -6,13 +6,24 @@ dotenv.config();
 
 import PurchaseReceiptEmail from './purchase-receipt';
 
-const resend = new Resend(process.env.RESEND_API_KEY as string);
+const resendApiKey = process.env.RESEND_API_KEY;
+
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 export const sendPurchaseReceipt = async ({ order }: { order: Order }) => {
-  await resend.emails.send({
-    from: `${APP_NAME} <${SENDER_EMAIL}>`,
-    to: order.user.email,
-    subject: `Order Confirmation ${order.id}`,
-    react: <PurchaseReceiptEmail order={order} />,
-  });
+  if (!resend) {
+    console.warn('❗ RESEND_API_KEY is missing. Skipping email sending.');
+    return;
+  }
+
+  try {
+    await resend.emails.send({
+      from: `${APP_NAME} <${SENDER_EMAIL}>`,
+      to: order.user.email,
+      subject: `Order Confirmation ${order.id}`,
+      react: <PurchaseReceiptEmail order={order} />,
+    });
+  } catch (error) {
+    console.error('Error sending purchase receipt:', error);
+  }
 };
